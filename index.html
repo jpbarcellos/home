@@ -64,7 +64,7 @@
 
         header h1 {
             font-size: 3rem;
-            margin-top: 5rem;
+            margin-top: 10rem;
             margin-bottom: 3rem;
             font-weight: 700;
             letter-spacing: 2px;
@@ -164,6 +164,45 @@
             font-size: 0.9rem;
             color: #000000;
             text-shadow: none;
+            text-shadow: none;
+        }
+
+        /* Antigravity Effects */
+        @keyframes floatPulse {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatAway {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+
+            100% {
+                transform: translateY(-100px) scale(1.2);
+                opacity: 0;
+                filter: blur(10px);
+            }
+        }
+
+        .float-anim {
+            animation: floatPulse 0.6s ease-in-out;
+        }
+
+        .vanish {
+            animation: floatAway 0.8s ease-in forwards;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -202,6 +241,8 @@
         </footer>
     </div>
     <script>
+        let previousValues = {};
+
         function updateCountdown() {
             const now = new Date();
             const targetDate = new Date('December 11, 2025 18:00:00');
@@ -220,19 +261,48 @@
             const msInDay = 24 * 60 * 60 * 1000;
             const msInWeek = 7 * msInDay;
 
-            // Calculate remainders
-            const weeks = Math.floor(diff / msInWeek);
-            const days = Math.floor((diff % msInWeek) / msInDay);
-            const hours = Math.floor((diff % msInDay) / msInHour);
-            const minutes = Math.floor((diff % msInHour) / msInMinute);
-            const seconds = Math.floor((diff % msInMinute) / msInSecond);
+            // Calculate values
+            const values = {
+                weeks: Math.floor(diff / msInWeek),
+                days: Math.floor((diff % msInWeek) / msInDay),
+                hours: Math.floor((diff % msInDay) / msInHour),
+                minutes: Math.floor((diff % msInHour) / msInMinute),
+                seconds: Math.floor((diff % msInMinute) / msInSecond)
+            };
 
-            // Update DOM
-            document.getElementById('weeks').textContent = formatNumber(weeks);
-            document.getElementById('days').textContent = formatNumber(days);
-            document.getElementById('hours').textContent = formatNumber(hours);
-            document.getElementById('minutes').textContent = formatNumber(minutes);
-            document.getElementById('seconds').textContent = formatNumber(seconds);
+            // Update DOM and Animations
+            for (const [unit, value] of Object.entries(values)) {
+                const element = document.getElementById(unit);
+                if (!element) continue;
+
+                const container = element.parentElement;
+
+                // Update text
+                element.textContent = formatNumber(value);
+
+                // Handle animations
+                if (previousValues[unit] !== value) {
+                    // Reset animation
+                    container.classList.remove('float-anim');
+                    void container.offsetWidth; // Trigger reflow
+
+                    if (value === 0) {
+                        container.classList.add('vanish');
+                    } else {
+                        container.classList.remove('vanish');
+                        container.classList.add('float-anim');
+                    }
+                }
+
+                // Ensure vanish state is correct on load/refresh
+                if (value === 0 && !container.classList.contains('vanish')) {
+                    container.classList.add('vanish');
+                } else if (value !== 0 && container.classList.contains('vanish')) {
+                    container.classList.remove('vanish');
+                }
+
+                previousValues[unit] = value;
+            }
         }
 
         function formatNumber(num) {
