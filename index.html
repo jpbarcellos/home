@@ -204,6 +204,10 @@
             animation: floatAway 0.8s ease-in forwards;
             pointer-events: none;
         }
+
+        .hidden-unit {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -242,6 +246,7 @@
     </div>
     <script>
         let previousValues = {};
+        const units = ['weeks', 'days', 'hours', 'minutes', 'seconds'];
 
         function updateCountdown() {
             const now = new Date();
@@ -250,7 +255,6 @@
             const diff = targetDate - now;
 
             if (diff <= 0) {
-                // Happy New Year logic could go here
                 return;
             }
 
@@ -270,8 +274,24 @@
                 seconds: Math.floor((diff % msInMinute) / msInSecond)
             };
 
-            // Update DOM and Animations
-            for (const [unit, value] of Object.entries(values)) {
+            // Determine which units are leading zeros
+            let isLeadingZero = true;
+            let hiddenUnits = new Set();
+
+            for (const unit of units) {
+                if (values[unit] > 0) {
+                    isLeadingZero = false;
+                }
+
+                // Hide leading zeros, but never hide seconds (last unit) to avoid empty page
+                if (isLeadingZero && unit !== 'seconds') {
+                    hiddenUnits.add(unit);
+                }
+            }
+
+            // Update DOM
+            for (const unit of units) {
+                const value = values[unit];
                 const element = document.getElementById(unit);
                 if (!element) continue;
 
@@ -280,25 +300,57 @@
                 // Update text
                 element.textContent = formatNumber(value);
 
-                // Handle animations
-                if (previousValues[unit] !== value) {
-                    // Reset animation
-                    container.classList.remove('float-anim');
-                    void container.offsetWidth; // Trigger reflow
+                // Handle Visibility
+                const shouldHide = hiddenUnits.has(unit);
+                const wasHidden = container.classList.contains('hidden-unit');
 
-                    if (value === 0) {
+                if (shouldHide && !wasHidden) {
+                    // Transition to hidden
+                    if (!container.classList.contains('vanish')) {
                         container.classList.add('vanish');
-                    } else {
+                        // Wait for animation then hide layout
+                        // Note: Using a property on the element to avoid multiple timeouts
+                        if (container.dataset.hideTimeout) clearTimeout(container.dataset.hideTimeout);
+                        container.dataset.hideTimeout = setTimeout(() => {
+                            container.classList.add('hidden-unit');
+                            container.classList.remove('vanish');
+                        }, 800);
+                    }
+                } else if (!shouldHide && wasHidden) {
+                    // Transition to show
+                    container.classList.remove('hidden-unit');
+                    if (container.dataset.hideTimeout) {
+                        clearTimeout(container.dataset.hideTimeout);
+                        delete container.dataset.hideTimeout;
+                    }
+                    container.classList.remove('vanish');
+                    container.classList.add('float-anim');
+                } else if (shouldHide && wasHidden) {
+                    // Already hidden, keep it hidden
+                } else {
+                    // Visible and staying visible -> check for value change animation
+                    // If it was vanishing but cancelled?
+                    if (container.classList.contains('vanish')) {
                         container.classList.remove('vanish');
+                        if (container.dataset.hideTimeout) clearTimeout(container.dataset.hideTimeout);
+                    }
+
+                    if (previousValues[unit] !== value) {
+                        container.classList.remove('float-anim');
+                        void container.offsetWidth; // Trigger reflow
                         container.classList.add('float-anim');
                     }
                 }
 
-                // Ensure vanish state is correct on load/refresh
-                if (value === 0 && !container.classList.contains('vanish')) {
-                    container.classList.add('vanish');
-                } else if (value !== 0 && container.classList.contains('vanish')) {
-                    container.classList.remove('vanish');
+                // If on load checks
+                if (shouldHide && !wasHidden && !container.classList.contains('vanish')) {
+                    // Immediate hide on load if leading zero (no animation needed for initial state)
+                    // But we can animate out if user prefers. 
+                    // Let's force hidden-unit immediately if it's the first run?
+                    // previousValues is empty on first run.
+                    if (Object.keys(previousValues).length === 0) {
+                        container.classList.add('hidden-unit');
+                    }
                 }
 
                 previousValues[unit] = value;
