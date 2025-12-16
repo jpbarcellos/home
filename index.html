@@ -4,376 +4,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contagem Regressiva FESTA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>Gerador de QR Code Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            --bg-color: #F3E469;
-            --text-color: #ffffff;
-            --accent-color: #F3E469;
-            /* Yellow */
-            --secondary-accent: #F3E469;
-            /* Yellow */
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 215, 0, 0.3);
-            /* Yellowish border */
-            --font-main: 'Outfit', sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #1f2937;
+            --input-bg: #f3f4f6;
+            --input-border: #d1d5db;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            overflow: hidden;
-            background: var(--bg-color) url('background3.png') no-repeat center top fixed;
-            background-size: 50% auto;
+            justify-content: center;
+            margin: 0;
+            color: var(--text-color);
         }
-
-        /* Background Animation Effect Removed for Image Background */
 
         .container {
-            text-align: center;
-            width: 90%;
-            max-width: 1200px;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .logo {
-            max-width: 200px;
-            margin-bottom: 2rem;
-            filter: brightness(0) invert(1);
-            /* Make logo white */
-            display: none;
-            /* Hide logo as requested */
-        }
-
-        header h1 {
-            font-size: 3rem;
-            margin-top: 10rem;
-            margin-bottom: 3rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-            color: #000000;
-        }
-
-        .year-highlight {
-            color: #000000;
-            font-weight: 700;
-            text-shadow: none;
-        }
-
-        .countdown-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .time-unit {
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
             border-radius: 20px;
-            padding: 2rem;
-            min-width: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .time-unit:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px 0 rgba(255, 215, 0, 0.1);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        .number {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 0.5rem;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #000000;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            body {
-                background-size: 80% auto;
-            }
-
-            header h1 {
-                font-size: 2rem;
-                margin-bottom: 2rem;
-            }
-
-            .countdown-container {
-                gap: 1rem;
-            }
-
-            .time-unit {
-                min-width: 100px;
-                padding: 1.5rem 1rem;
-            }
-
-            .number {
-                font-size: 2.5rem;
-            }
-
-            .label {
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                background-size: 100% auto;
-            }
-
-            .time-unit {
-                min-width: 45%;
-                padding: 1rem;
-            }
-
-            .number {
-                font-size: 2rem;
-            }
-        }
-
-        footer {
-            margin-top: 4rem;
-            font-size: 0.9rem;
-            color: #000000;
-            text-shadow: none;
-            text-shadow: none;
-        }
-
-        /* Antigravity Effects */
-        @keyframes floatPulse {
-            0% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-
-            100% {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes floatAway {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-                filter: blur(0);
-            }
-
-            100% {
-                transform: translateY(-100px) scale(1.2);
+        @keyframes fadeIn {
+            from {
                 opacity: 0;
-                filter: blur(10px);
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        .float-anim {
-            animation: floatPulse 0.6s ease-in-out;
+        h1 {
+            text-align: center;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 1.8rem;
         }
 
-        .vanish {
-            animation: floatAway 0.8s ease-in forwards;
-            pointer-events: none;
+        .form-group {
+            margin-bottom: 1.25rem;
         }
 
-        .hidden-unit {
-            display: none !important;
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        input[type="text"],
+        input[type="url"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            background-color: var(--input-bg);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 2rem;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1.5rem;
+            display: none;
+            /* Hidden by default */
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #059669;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
         }
     </style>
 </head>
 
 <body>
+
     <div class="container">
-        <header>
-            <h1>The party starting in:</h1>
-        </header>
+        <h1>Gerador de QR Code</h1>
+        <div id="qr-form">
+            <div class="form-group">
+                <label for="title">Nome do QR Code</label>
+                <input type="text" id="title" name="title" placeholder="Ex: Printer Guide" required>
+            </div>
+            <div class="form-group">
+                <label for="url">URL de Destino</label>
+                <input type="url" id="url" name="url" placeholder="https://..." required>
+            </div>
+            <button onclick="generateQRCode()">RUN</button>
+        </div>
 
-        <main class="countdown-container">
-            <div class="time-unit">
-                <div class="number" id="weeks">00</div>
-                <div class="label">Semanas</div>
-            </div>
-            <div class="time-unit">
-                <div class="number" id="days">00</div>
-                <div class="label">Dias</div>
-            </div>
-            <div class="time-unit">
-                <div class="number" id="hours">00</div>
-                <div class="label">Horas</div>
-            </div>
-            <div class="time-unit">
-                <div class="number" id="minutes">00</div>
-                <div class="label">Minutos</div>
-            </div>
-            <div class="time-unit">
-                <div class="number" id="seconds">00</div>
-                <div class="label">Segundos</div>
-            </div>
-        </main>
+        <!-- Hidden div to hold the raw QR code from library -->
+        <div id="raw-qr-container" style="display:none;"></div>
 
-        <footer>
-            <p>Made by João Paulo Barcellos | Powered by Google Antigravity</p>
-        </footer>
+        <div class="result" id="result-area">
+            <h3>Seu QR Code está pronto!</h3>
+            <img id="final-image" src="" alt="QR Code Gerado">
+            <br>
+            <a id="download-link" href="#" class="download-btn">
+                Baixar Imagem
+            </a>
+        </div>
+
+        <div class="footer">
+            Desenvolvido com Antigravity
+        </div>
     </div>
+
     <script>
-        let previousValues = {};
-        const units = ['weeks', 'days', 'hours', 'minutes', 'seconds'];
+        function generateQRCode() {
+            const titleInput = document.getElementById('title');
+            const urlInput = document.getElementById('url');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
 
-        function updateCountdown() {
-            const now = new Date();
-            const targetDate = new Date('December 11, 2025 18:00:00');
-
-            const diff = targetDate - now;
-
-            if (diff <= 0) {
+            if (!title || !url) {
+                alert("Por favor, preencha todos os campos.");
                 return;
             }
 
-            // Basic time units
-            const msInSecond = 1000;
-            const msInMinute = 60 * 1000;
-            const msInHour = 60 * 60 * 1000;
-            const msInDay = 24 * 60 * 60 * 1000;
-            const msInWeek = 7 * msInDay;
+            // Clean up previous
+            const container = document.getElementById('raw-qr-container');
+            container.innerHTML = '';
 
-            // Calculate values
-            const values = {
-                weeks: Math.floor(diff / msInWeek),
-                days: Math.floor((diff % msInWeek) / msInDay),
-                hours: Math.floor((diff % msInDay) / msInHour),
-                minutes: Math.floor((diff % msInHour) / msInMinute),
-                seconds: Math.floor((diff % msInMinute) / msInSecond)
-            };
+            // QR Settings
+            // We stick to a large size to ensure quality when generating the combined image
+            const qrSize = 400;
 
-            // Determine which units are leading zeros
-            let isLeadingZero = true;
-            let hiddenUnits = new Set();
+            // Generate QR using qrcodejs
+            new QRCode(container, {
+                text: url,
+                width: qrSize,
+                height: qrSize,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L
+            });
 
-            for (const unit of units) {
-                if (values[unit] > 0) {
-                    isLeadingZero = false;
-                }
+            // The library creates a canvas or img. We prefer canvas.
+            // It might take a split second to render if it uses img loading, but usually it's instant for canvas.
+            // We will poll briefly to be safe.
 
-                // Hide leading zeros, but never hide seconds (last unit) to avoid empty page
-                if (isLeadingZero && unit !== 'seconds') {
-                    hiddenUnits.add(unit);
-                }
-            }
-
-            // Update DOM
-            for (const unit of units) {
-                const value = values[unit];
-                const element = document.getElementById(unit);
-                if (!element) continue;
-
-                const container = element.parentElement;
-
-                // Update text
-                element.textContent = formatNumber(value);
-
-                // Handle Visibility
-                const shouldHide = hiddenUnits.has(unit);
-                const wasHidden = container.classList.contains('hidden-unit');
-
-                if (shouldHide && !wasHidden) {
-                    // Transition to hidden
-                    if (!container.classList.contains('vanish')) {
-                        container.classList.add('vanish');
-                        // Wait for animation then hide layout
-                        // Note: Using a property on the element to avoid multiple timeouts
-                        if (container.dataset.hideTimeout) clearTimeout(container.dataset.hideTimeout);
-                        container.dataset.hideTimeout = setTimeout(() => {
-                            container.classList.add('hidden-unit');
-                            container.classList.remove('vanish');
-                        }, 800);
-                    }
-                } else if (!shouldHide && wasHidden) {
-                    // Transition to show
-                    container.classList.remove('hidden-unit');
-                    if (container.dataset.hideTimeout) {
-                        clearTimeout(container.dataset.hideTimeout);
-                        delete container.dataset.hideTimeout;
-                    }
-                    container.classList.remove('vanish');
-                    container.classList.add('float-anim');
-                } else if (shouldHide && wasHidden) {
-                    // Already hidden, keep it hidden
+            const checkElement = setInterval(() => {
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    clearInterval(checkElement);
+                    createCompositeImage(title, canvas, qrSize);
                 } else {
-                    // Visible and staying visible -> check for value change animation
-                    // If it was vanishing but cancelled?
-                    if (container.classList.contains('vanish')) {
-                        container.classList.remove('vanish');
-                        if (container.dataset.hideTimeout) clearTimeout(container.dataset.hideTimeout);
-                    }
-
-                    if (previousValues[unit] !== value) {
-                        container.classList.remove('float-anim');
-                        void container.offsetWidth; // Trigger reflow
-                        container.classList.add('float-anim');
+                    const img = container.querySelector('img');
+                    if (img && img.src) {
+                        clearInterval(checkElement);
+                        // For IMG, we need to wait for onload
+                        if (img.complete) {
+                            createCompositeImage(title, img, qrSize);
+                        } else {
+                            img.onload = () => createCompositeImage(title, img, qrSize);
+                        }
                     }
                 }
-
-                // If on load checks
-                if (shouldHide && !wasHidden && !container.classList.contains('vanish')) {
-                    // Immediate hide on load if leading zero (no animation needed for initial state)
-                    // But we can animate out if user prefers. 
-                    // Let's force hidden-unit immediately if it's the first run?
-                    // previousValues is empty on first run.
-                    if (Object.keys(previousValues).length === 0) {
-                        container.classList.add('hidden-unit');
-                    }
-                }
-
-                previousValues[unit] = value;
-            }
+            }, 50);
         }
 
-        function formatNumber(num) {
-            return num < 10 ? `0${num}` : num;
+        function createCompositeImage(title, qrSource, qrSize) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Font Configuration
+            const fontSize = 40;
+            const fontConfig = "bold " + fontSize + "px Arial";
+            ctx.font = fontConfig; // Use Arial to match Python behavior safely, or 'Inter' if available
+
+            // Measure Text
+            const textMetrics = ctx.measureText(title);
+            const textWidth = textMetrics.width;
+            // Text height approximation (as measureText height is complex in canvas)
+            const textHeight = fontSize * 1.2;
+
+            const padding = 20;
+
+            // Calculate Total Dimensions (matching Python logic)
+            // total_width = max(qr_width, text_width + 2 * padding)
+            const totalWidth = Math.max(qrSize, textWidth + (2 * padding));
+            // total_height = qr_height + text_height + 3 * padding
+            const totalHeight = qrSize + textHeight + (3 * padding);
+
+            // Set Canvas Size
+            canvas.width = totalWidth;
+            canvas.height = totalHeight;
+
+            // Draw White Background
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+            // Draw Text
+            ctx.fillStyle = "#000000";
+            ctx.font = fontConfig;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "top";
+
+            // Center text
+            const textX = totalWidth / 2;
+            const textY = padding;
+            ctx.fillText(title, textX, textY);
+
+            // Draw QR Code
+            // Center QR code
+            const qrX = (totalWidth - qrSize) / 2;
+            const qrY = padding + textHeight + padding;
+
+            ctx.drawImage(qrSource, qrX, qrY, qrSize, qrSize);
+
+            // Output Result
+            const dataUrl = canvas.toDataURL("image/png");
+
+            const resultArea = document.getElementById('result-area');
+            const finalImage = document.getElementById('final-image');
+            const downloadLink = document.getElementById('download-link');
+
+            finalImage.src = dataUrl;
+
+            // Create filename
+            const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            downloadLink.download = safeTitle + "_qrcode.png";
+            downloadLink.href = dataUrl;
+
+            // Show result
+            resultArea.style.display = 'block';
         }
-
-        // Update immediately and then every second
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-
     </script>
+
 </body>
 
 </html>
